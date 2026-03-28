@@ -1,5 +1,7 @@
 # Bloomi
 
+**Live:** [bloomi-pi.vercel.app](https://bloomi-pi.vercel.app/)
+
 A colorful, friendly calendar app that keeps things simple. No clutter, no feature overload — just a clean way to manage your day.
 
 ## Features
