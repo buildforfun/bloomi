@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bloomi
+
+A colorful, friendly calendar app that keeps things simple. No clutter, no feature overload — just a clean way to manage your day.
+
+## Features
+
+- **Day & Week views** — toggle between a single-day timeline and a full week grid
+- **Drag and drop** — reschedule events by dragging them to a new time slot or day
+- **Overlapping events** — multiple events at the same time render side-by-side, not stacked
+- **10 pastel colors** — every event gets a color, picked from a curated palette
+- **Add, edit, delete** — simple modal form with time validation and delete confirmation
+- **Local storage** — your events stay in your browser, no account needed
+- **Mobile responsive** — works on desktop and mobile with touch-friendly drag support
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) (App Router)
+- [React](https://react.dev/) + TypeScript
+- [Tailwind CSS](https://tailwindcss.com/)
+- [dnd-kit](https://dndkit.com/) for drag-and-drop
+- localStorage for persistence
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Bloomi is ready to deploy on [Vercel](https://vercel.com):
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+Or connect your GitHub repo to Vercel for automatic deployments.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## What Bloomi Doesn't Do (intentionally)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- No user accounts or auth
+- No recurring events
+- No notifications or reminders
+- No sync across devices
+- No all-day events
 
-## Deploy on Vercel
+These are deliberate constraints to keep the app minimal and focused. They may come in future versions.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
