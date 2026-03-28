@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarEvent } from "../lib/types";
+import { CalendarEvent, getTagColor } from "../lib/types";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -55,6 +55,30 @@ export default function EventCard({ event, onClick, compact }: EventCardProps) {
       <div className="opacity-80 text-xs">
         {event.startTime} - {event.endTime}
       </div>
+      {event.tags && event.tags.length > 0 && (
+        <div className="flex flex-wrap gap-0.5 mt-0.5">
+          {(compact ? event.tags.slice(0, 2) : event.tags).map((tag) => {
+            const tagColor = getTagColor(tag);
+            return (
+              <span
+                key={tag}
+                className="inline-block px-1.5 py-0 rounded-full font-medium"
+                style={{
+                  backgroundColor: tagColor.bg,
+                  color: tagColor.text,
+                  fontSize: compact ? "0.6rem" : "0.65rem",
+                  lineHeight: compact ? "1rem" : "1.1rem",
+                }}
+              >
+                {tag}
+              </span>
+            );
+          })}
+          {compact && event.tags.length > 2 && (
+            <span className="text-xs opacity-60">+{event.tags.length - 2}</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ interface CalendarHeaderProps {
   onViewModeChange: (mode: ViewMode) => void;
   onDateChange: (date: Date) => void;
   onAddEvent: () => void;
+  onShare: () => void;
 }
 
 export default function CalendarHeader({
@@ -17,6 +18,7 @@ export default function CalendarHeader({
   onViewModeChange,
   onDateChange,
   onAddEvent,
+  onShare,
 }: CalendarHeaderProps) {
   const goToday = () => onDateChange(new Date());
 
@@ -114,6 +116,13 @@ export default function CalendarHeader({
           className="px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-md hover:shadow-lg transition-all"
         >
           + New Event
+        </button>
+
+        <button
+          onClick={onShare}
+          className="px-3 py-2 text-sm font-medium rounded-xl border border-purple-200 text-purple-600 hover:bg-purple-50 transition-colors"
+        >
+          Share
         </button>
 
         <input

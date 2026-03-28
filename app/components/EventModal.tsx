@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CalendarEvent, EVENT_COLORS } from "../lib/types";
+import { CalendarEvent, EVENT_COLORS, getTagColor } from "../lib/types";
 import { generateId, formatDate } from "../lib/storage";
 
 interface EventModalProps {
@@ -29,6 +29,8 @@ export default function EventModal({
   const [endTime, setEndTime] = useState("10:00");
   const [color, setColor] = useState(EVENT_COLORS[0]);
   const [description, setDescription] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
   const [error, setError] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -40,6 +42,7 @@ export default function EventModal({
       setEndTime(event.endTime);
       setColor(event.color);
       setDescription(event.description || "");
+      setTags(event.tags || []);
     } else {
       setTitle("");
       setDate(defaultDate || formatDate(new Date()));
@@ -47,10 +50,24 @@ export default function EventModal({
       setEndTime(defaultTime ? `${String(parseInt(defaultTime) + 1).padStart(2, "0")}:00` : "10:00");
       setColor(EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)]);
       setDescription("");
+      setTags([]);
     }
     setError("");
+    setTagInput("");
     setShowDeleteConfirm(false);
   }, [event, isOpen, defaultDate, defaultTime]);
+
+  const addTag = () => {
+    const trimmed = tagInput.trim().toLowerCase();
+    if (trimmed && !tags.includes(trimmed)) {
+      setTags([...tags, trimmed]);
+    }
+    setTagInput("");
+  };
+
+  const removeTag = (tag: string) => {
+    setTags(tags.filter((t) => t !== tag));
+  };
 
   if (!isOpen) return null;
 
@@ -73,6 +90,7 @@ export default function EventModal({
       endTime,
       color,
       description: description.trim() || undefined,
+      tags: tags.length > 0 ? tags : undefined,
     });
     onClose();
   };
@@ -179,6 +197,57 @@ export default function EventModal({
               rows={2}
               className="w-full px-4 py-2.5 rounded-xl border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-300 text-gray-800 placeholder-gray-400 resize-none"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Tags
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addTag();
+                  }
+                }}
+                placeholder="Add a tag..."
+                className="flex-1 px-4 py-2 rounded-xl border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-300 text-gray-800 placeholder-gray-400 text-sm"
+              />
+              <button
+                type="button"
+                onClick={addTag}
+                className="px-3 py-2 rounded-xl bg-purple-100 text-purple-700 font-semibold hover:bg-purple-200 transition-colors text-sm"
+              >
+                +
+              </button>
+            </div>
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {tags.map((tag) => {
+                  const tagColor = getTagColor(tag);
+                  return (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium"
+                      style={{ backgroundColor: tagColor.bg, color: tagColor.text }}
+                    >
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => removeTag(tag)}
+                        className="hover:opacity-70 transition-opacity font-bold"
+                      >
+                        x
+                      </button>
+                    </span>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2 pt-2">

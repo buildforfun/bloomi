@@ -15,6 +15,7 @@ import CalendarHeader from "./components/CalendarHeader";
 import DayView from "./components/DayView";
 import WeekView from "./components/WeekView";
 import EventModal from "./components/EventModal";
+import ShareModal from "./components/ShareModal";
 
 export default function Home() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -24,6 +25,7 @@ export default function Home() {
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [defaultDate, setDefaultDate] = useState<string | undefined>();
   const [defaultTime, setDefaultTime] = useState<string | undefined>();
+  const [shareModalOpen, setShareModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -169,6 +171,7 @@ export default function Home() {
           onViewModeChange={setViewMode}
           onDateChange={setCurrentDate}
           onAddEvent={handleAddEvent}
+          onShare={() => setShareModalOpen(true)}
         />
 
         {viewMode === "day" ? (
@@ -195,6 +198,12 @@ export default function Home() {
           event={editingEvent}
           defaultDate={defaultDate}
           defaultTime={defaultTime}
+        />
+
+        <ShareModal
+          isOpen={shareModalOpen}
+          onClose={() => setShareModalOpen(false)}
+          events={events}
         />
       </div>
     </DndContext>

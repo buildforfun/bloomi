@@ -68,3 +68,19 @@ export function parseDate(dateStr: string): Date {
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
+
+export function getAllTags(events: CalendarEvent[]): string[] {
+  const tagSet = new Set<string>();
+  for (const event of events) {
+    if (event.tags) {
+      for (const tag of event.tags) {
+        tagSet.add(tag);
+      }
+    }
+  }
+  return Array.from(tagSet).sort();
+}
+
+export function getEventsByTag(events: CalendarEvent[], tag: string): CalendarEvent[] {
+  return events.filter((e) => e.tags?.includes(tag));
+}
