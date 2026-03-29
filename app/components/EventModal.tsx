@@ -98,7 +98,7 @@ export default function EventModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95">
+      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-bold text-gray-800 mb-4">
           {event ? "Edit Event" : "New Event"} ✨
         </h2>
@@ -175,7 +175,7 @@ export default function EventModal({
                   key={c}
                   type="button"
                   onClick={() => setColor(c)}
-                  className={`w-8 h-8 rounded-full transition-all ${
+                  className={`w-10 h-10 rounded-full transition-all ${
                     color === c
                       ? "ring-2 ring-offset-2 ring-purple-500 scale-110"
                       : "hover:scale-110"

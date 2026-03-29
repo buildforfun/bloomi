@@ -1,12 +1,29 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { User } from "firebase/auth";
 import { CalendarEvent, getTagColor } from "../lib/types";
+import { generateId } from "../lib/storage";
+import { signInWithGoogle, onAuthChange } from "../lib/auth";
+import { saveEventToFirestore } from "../lib/firestore";
 
 function SharedEventsContent() {
   const searchParams = useSearchParams();
   const data = searchParams.get("data");
+  const [user, setUser] = useState<User | null>(null);
+  const [importing, setImporting] = useState(false);
+  const [imported, setImported] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Check auth state once
+  useState(() => {
+    const unsubscribe = onAuthChange((firebaseUser) => {
+      setUser(firebaseUser);
+      setAuthChecked(true);
+      unsubscribe();
+    });
+  });
 
   let events: CalendarEvent[] = [];
   let error = "";
@@ -21,15 +38,43 @@ function SharedEventsContent() {
     error = "No event data found in this link.";
   }
 
+  const handleAddToCalendar = async () => {
+    setImporting(true);
+    try {
+      let currentUser = user;
+      if (!currentUser) {
+        currentUser = await signInWithGoogle();
+        if (!currentUser) {
+          setImporting(false);
+          return;
+        }
+        setUser(currentUser);
+      }
+
+      // Import each event with a new ID to avoid conflicts
+      for (const event of events) {
+        const newEvent: CalendarEvent = {
+          ...event,
+          id: generateId(),
+          tags: [...(event.tags || []), "shared"],
+        };
+        await saveEventToFirestore(currentUser.uid, newEvent);
+      }
+      setImported(true);
+    } catch (err) {
+      console.error("Failed to import events:", err);
+    } finally {
+      setImporting(false);
+    }
+  };
+
   // Group events by date
   const grouped: Record<string, CalendarEvent[]> = {};
   for (const event of events) {
     if (!grouped[event.date]) grouped[event.date] = [];
     grouped[event.date].push(event);
   }
-  // Sort dates
   const sortedDates = Object.keys(grouped).sort();
-  // Sort events within each date by start time
   for (const date of sortedDates) {
     grouped[date].sort((a, b) => a.startTime.localeCompare(b.startTime));
   }
@@ -57,16 +102,45 @@ function SharedEventsContent() {
               {events.length} event{events.length !== 1 ? "s" : ""} shared
             </p>
           </div>
-          <a
-            href="/"
-            className="px-4 py-2 text-sm font-medium rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-md transition-all"
-          >
-            Open Bloomi
-          </a>
+          <div className="flex items-center gap-2">
+            {!error && events.length > 0 && authChecked && (
+              <button
+                onClick={handleAddToCalendar}
+                disabled={importing || imported}
+                className={`px-4 py-2 text-sm font-semibold rounded-xl shadow-md transition-all ${
+                  imported
+                    ? "bg-green-100 text-green-700"
+                    : importing
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
+                }`}
+              >
+                {imported
+                  ? "Added!"
+                  : importing
+                  ? "Adding..."
+                  : user
+                  ? "Add to My Calendar"
+                  : "Sign in & Add to Calendar"}
+              </button>
+            )}
+            <a
+              href="/"
+              className="px-4 py-2 text-sm font-medium rounded-xl border border-purple-200 text-purple-600 hover:bg-purple-50 transition-colors"
+            >
+              Open Bloomi
+            </a>
+          </div>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-8">
+        {imported && (
+          <div className="mb-6 px-4 py-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-medium text-center">
+            {events.length} event{events.length !== 1 ? "s" : ""} added to your calendar with the "shared" tag.
+          </div>
+        )}
+
         {error ? (
           <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6 text-center">
             <p className="text-red-600 font-medium">{error}</p>

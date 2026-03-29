@@ -35,7 +35,7 @@ export default function WeekView({
             return (
               <div
                 key={ds}
-                className={`flex-1 text-center py-2 border-l border-purple-50 min-w-[100px] ${
+                className={`flex-1 text-center py-2 border-l border-purple-50 ${
                   isToday ? "bg-purple-50/50" : ""
                 }`}
               >
@@ -167,7 +167,7 @@ function TimeSlotCell({
     <div
       ref={setNodeRef}
       onClick={onClick}
-      className={`flex-1 border-l border-purple-50 py-0.5 px-0.5 space-y-0.5 cursor-pointer min-w-[100px] transition-colors ${
+      className={`flex-1 border-l border-purple-50 py-0.5 px-0.5 space-y-0.5 cursor-pointer transition-colors ${
         isOver ? "bg-purple-50" : isToday ? "bg-purple-50/30" : "hover:bg-gray-50/50"
       }`}
     >

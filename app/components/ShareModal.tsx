@@ -48,7 +48,7 @@ export default function ShareModal({ isOpen, onClose, events }: ShareModalProps)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95">
+      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-bold text-gray-800 mb-4">
           Share Events by Tag
         </h2>
